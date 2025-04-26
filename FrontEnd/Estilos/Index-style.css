@@ -398,21 +398,27 @@ body {
 
   /* Responsive momento*/
 
-  @media (max-width: 768px) {
+  @media (max-width: 580px) {
     .carrusel {
-      top: 20%;
-      height: 300px;
-    }  
+      height: 400px;
+      top: 20px;
+    }
+
     .carrusel-imagen {
-      height: 300px;
+      height: 325px;
     }
-  
+
     .carrusel-boton {
-      font-size: 24px;
-      padding: 6px;
+      width: 35px;
+      height: 35px;
     }
-  
+
+    .carrusel-boton svg {
+      width: 18px;
+      height: 18px;
+    }
+
     .carrusel-indicadores {
-      gap: 20px;
+      gap: 15px;
     }
   }
