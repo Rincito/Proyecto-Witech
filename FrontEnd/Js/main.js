@@ -196,40 +196,62 @@ registerForm.addEventListener("submit", function (e) {
 });
 
 
-function registrarUsuario(email, password) {
-// 1. Enviar código de verificación
-firebase.functions().httpsCallable('sendVerificationCode')({ email: email })
-    .then(result => {
-        console.log(result.data.result);
-        alert("Código de verificación enviado");
-        // 2. Mostrar formulario de verificación
-        //mostrarFormularioVerificacion(email, password);
-    })
-    .catch(error => {
-        console.error("Error sending verification code:", error);
-        alert(error.message);
-    });
-}
+ // Función para registrar un usuario
+ function registrarUsuario(email, password, code) {
+  // 1. Enviar código de verificación
+  fetch('../../BackEnd/api/send-verification-code', { // <--- AQUI
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: email })
+  })
+      .then(response => response.json())
+      .then(data => {
+          console.log(data.message);
+          alert("Código de verificación enviado");
+          // 2. Mostrar formulario de verificación
 
-//Función para verificar código
-function verificarCodigo(email, password, code) {
-firebase.functions().httpsCallable('verifyCode')({ email: email, code: code })
-    .then(result => {
-        console.log(result.data.result);
+      })
+      .catch(error => {
+          console.error("Error sending verification code:", error);
+          alert(error.message);
+      })
+      .then(() => {
+          // Verificar el código
+          return fetch('/api/verify-code', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ email: email, code: code })
+          });
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log(data.message);
 
-        // 3. Crear la cuenta con createUserWithEmailAndPassword
-        return firebase.auth().createUserWithEmailAndPassword(email, password);
-    })
-    .then(userCredential => {
-        console.log("User registered:", userCredential.user);
-        alert("Registro completado con éxito");
-        popupOverlay.style.display = "none";
-        registerForm.reset();
-    })
-    .catch(error => {
-        console.error("Error verifying code or creating user:", error);
-        alert(error.message);
-    });
+          // Registro del usuario directamente en Supabase
+          return supabase.auth.signUp({
+              email: email,
+              password: password,
+          })
+      })
+      .then((response) => {
+          if (response.error) {
+              throw new Error(response.error.message);
+          }
+          return response;
+      })
+      .then(() => {
+          alert("Registro completado con éxito");
+          popupOverlay.style.display = "none";
+          registerForm.reset();
+      })
+      .catch(error => {
+          console.error("Error durante el registro:", error);
+          alert(error.message);
+      });
 }
 
 
