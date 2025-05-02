@@ -11,13 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".duracion-pelicula").textContent = data.duracion;
     document.querySelector(".año-pelicula").textContent = data.año;
     document.querySelector(".sinopsis-pelicula").textContent = data.sinopsis;
-    document.querySelector(".imagen-fondo").style.backgroundImage = `url(${data.imagenFondo})`;
+    document.querySelector(
+      ".imagen-fondo"
+    ).style.backgroundImage = `url(${data.imagenFondo})`;
     document.querySelector("#URL").src = data.video;
 
     // Generar enlaces de géneros
     const generosContainer = document.querySelector(".generos-pelicula");
     generosContainer.innerHTML = data.generos
-      .map(genero => `<a href="#" class="link-genero">${genero}</a>`)
+      .map((genero) => `<a href="#" class="link-genero">${genero}</a>`)
       .join(", ");
 
     // Mostrar más detalles

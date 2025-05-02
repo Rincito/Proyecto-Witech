@@ -1,3 +1,0 @@
-[build]
-  publish = "FrontEnd" # Directorio con el frontend
-  functions = "api" 
